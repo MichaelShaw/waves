@@ -20,6 +20,15 @@ pub mod time;
 use io::IO;
 pub use time::*;
 
+pub use vst2::*;    
+
+#[macro_export]
+macro_rules! wave {
+    ($wave:ty) => {
+        plugin_main!(WaveHost<$wave>);
+    }
+}
+
 pub struct WaveHost<W> where W : Wave {
     pub wave : W,
     pub sample_rate : f64,
@@ -33,7 +42,7 @@ pub trait Wave {
     // type state?
 
     fn new() -> Self;
-    fn process(time:TimeSpan) -> Vec<<Self as Wave>::Output>;
+    fn process(time:TimeSpan) -> Vec<Self::Output>;
 }
 
 

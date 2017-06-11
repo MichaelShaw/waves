@@ -1,13 +1,10 @@
 
 
-
-#[macro_use]
-extern crate vst2;
 extern crate waves;
 
 use waves::*;
 
-plugin_main!(WaveHost<SineWave>);
+wave!(SineWave);
 
 use std::f64::consts::PI;
 pub const TAU : f64 = PI * 2.0;
