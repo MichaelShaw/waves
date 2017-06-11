@@ -1,0 +1,14 @@
+[package]
+name = "waves"
+version = "0.1.0"
+authors = ["Michael Shaw <michaeljshaw@gmail.com>"]
+
+[dependencies]
+vst2 = "0.0.1"
+log = "0.3"
+simplelog = "0.4"
+num-traits = "0.1"
+
+[lib]
+name = "waves"
+crate-type = ["dylib"]
