@@ -11,4 +11,7 @@ num-traits = "0.1"
 
 [lib]
 name = "waves"
-crate-type = ["dylib"]
+
+[[example]]
+name = "sine"
+crate-type = ["cdylib"]

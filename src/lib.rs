@@ -1,5 +1,4 @@
 
-#[macro_use]
 extern crate vst2;
 #[macro_use] 
 extern crate log;
@@ -19,10 +18,7 @@ pub mod param;
 pub mod time;
 
 use io::IO;
-
-use time::TimeSpan;
-
-use std::f64::consts::PI;
+pub use time::*;
 
 pub struct WaveHost<W> where W : Wave {
     pub wave : W,
@@ -31,35 +27,15 @@ pub struct WaveHost<W> where W : Wave {
     // params
 }
 
-
 pub trait Wave {
     type Input : IO;
     type Output : IO;
+    // type state?
 
     fn new() -> Self;
     fn process(time:TimeSpan) -> Vec<<Self as Wave>::Output>;
 }
 
-pub const TAU : f64 = PI * 2.0;
-
-plugin_main!(WaveHost<SineWave>);
-
-struct SineWave();
-impl Wave for SineWave {
-    type Input = ();
-    type Output = f32;
-
-    fn new() -> Self { // .... and a param definition
-        SineWave {}
-    }
-
-    fn process(time:TimeSpan) -> Vec<f32> {
-        let freq = 440.0;
-        time.time_iter().map(|t| {
-            (t * freq * TAU).sin() as f32 
-        }).collect()
-    }   
-}
 
 impl<W> Default for WaveHost<W> where W : Wave {
     fn default() -> Self {
