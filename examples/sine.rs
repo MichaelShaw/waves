@@ -1,13 +1,10 @@
-
-
 extern crate waves;
 
 use waves::*;
 
 wave!(SineWave);
 
-use std::f64::consts::PI;
-pub const TAU : f64 = PI * 2.0;
+pub const TAU : f64 = std::f64::consts::PI * 2.0;
 
 struct SineWave();
 impl Wave for SineWave {
