@@ -37,14 +37,10 @@ impl Iterator for TimeIterator {
     type Item = f64;
 
     fn next(&mut self) -> Option<f64> {
-        // let t = start + 
         if self.at < self.samples {
             let new_at = self.at + 1;
-
             let at_time = self.start + self.per_sample * (self.at as f64);
-
             self.at = new_at;
-
             Some(at_time)
         } else {
             None

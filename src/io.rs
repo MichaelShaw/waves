@@ -3,14 +3,8 @@
 use std::fmt::Debug;
 
 pub trait IO : Sized + Debug {
-    
     fn channel_count() -> usize;
     fn sink(data: &[Self], buffer: &mut Vec<&mut [f32]>);
-    // fn sink(v:Vec<Item>);
-
-
- 
-    // a zipper thingy
 }
 
 impl IO for () {
@@ -20,7 +14,6 @@ impl IO for () {
 }
 
 impl IO for f32 {
-    // type Item = f32;
     fn channel_count() -> usize { 1 }
     fn sink(data: &[f32], buffer: &mut Vec<&mut [f32]>) {
         for (i, d) in data.iter().enumerate() {
@@ -29,8 +22,13 @@ impl IO for f32 {
     }
 }
 
-// impl IO for (f32, f32) {
-//     type Item = (f32, f32);
-//     fn channel_count() -> usize { 2 }
-// }
+impl IO for (f32, f32) {
+    fn channel_count() -> usize { 2 }
+    fn sink(data: &[(f32, f32)], buffer: &mut Vec<&mut [f32]>) {
+        for (i, &(l, r)) in data.iter().enumerate() {
+            buffer[0][i] = l;
+            buffer[1][i] = r;
+        }
+    }
+}
     

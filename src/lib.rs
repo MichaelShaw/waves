@@ -67,8 +67,6 @@ impl<W> Plugin for WaveHost<W> where W : Wave {
     }
 
     fn get_info(&self) -> Info {
-        // info!("someone calling get info!!");
-
         let in_count = W::Input::channel_count() as i32;
         let out_count = W::Output::channel_count() as i32;
 
