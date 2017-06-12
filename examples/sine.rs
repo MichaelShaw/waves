@@ -11,11 +11,12 @@ impl Wave for SineWave {
     type Input = ();
     type Output = f32;
 
+
     fn new() -> Self { // .... and a param definition
         SineWave {}
     }
 
-    fn process(time:TimeSpan) -> Vec<f32> {
+    fn process(&mut self, time:TimeSpan, input: &[()]) -> Vec<f32> {
         let freq = 440.0;
         time.time_iter().map(|t| {
             (t * freq * TAU).sin() as f32 

@@ -42,7 +42,8 @@ pub trait Wave {
     // type state?
 
     fn new() -> Self;
-    fn process(time:TimeSpan) -> Vec<Self::Output>;
+    // input: &[Self::Input]
+    fn process(&mut self, time:TimeSpan, input: &[Self::Input]) -> Vec<Self::Output>;
 }
 
 
@@ -104,7 +105,12 @@ impl<W> Plugin for WaveHost<W> where W : Wave {
                 sample_rate: self.sample_rate,
             };
 
-            let out = W::process(time_span);
+            let input = W::Input::read(&inputs);
+
+
+
+
+            let out = self.wave.process(time_span, &input);
             W::Output::sink(out.as_slice(), &mut outputs);
 
             self.time += time_span.total_time();
