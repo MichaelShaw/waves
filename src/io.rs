@@ -33,7 +33,7 @@ impl IO for f32 {
         let channel = &buffer[0];
 
         let mut v = Vec::with_capacity(channel.len());
-        v.copy_from_slice(channel);
+        v.extend_from_slice(channel);
         v
     }
 }

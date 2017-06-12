@@ -4,12 +4,13 @@ extern crate vst2;
 extern crate log;
 extern crate simplelog;
 extern crate num_traits;
+extern crate log_panics;
 
 use simplelog::*;
 use std::fs::File;
 
 use vst2::buffer::AudioBuffer;
-use vst2::plugin::{Category, Plugin, Info, HostCallback};
+use vst2::plugin::{Plugin, Info, HostCallback};
 
 // use num_traits::Float;
 
@@ -18,9 +19,11 @@ pub mod param;
 pub mod time;
 
 use io::IO;
-pub use time::*;
 
+pub use time::*;
 pub use vst2::*;    
+
+pub type Category = vst2::plugin::Category;
 
 #[macro_export]
 macro_rules! wave {
@@ -31,17 +34,25 @@ macro_rules! wave {
 
 pub struct WaveHost<W> where W : Wave {
     pub wave : W,
+    pub description: WaveDescription,
     pub sample_rate : f64,
     pub time: f64,
     // params
 }
 
-pub trait Wave {
+pub struct WaveDescription {
+    pub name : String,
+    pub vendor : String,
+    pub unique_id: i32,
+    pub category: Category,
+}
+
+pub trait Wave where Self : Sized {
     type Input : IO;
     type Output : IO;
     // type state?
 
-    fn new() -> Self;
+    fn new() -> (Self, WaveDescription);
     // input: &[Self::Input]
     fn process(&mut self, time:TimeSpan, input: &[Self::Input]) -> Vec<Self::Output>;
 }
@@ -49,6 +60,8 @@ pub trait Wave {
 
 impl<W> Default for WaveHost<W> where W : Wave {
     fn default() -> Self {
+        log_panics::init();
+
         let _ = CombinedLogger::init(
             vec![
                 // TermLogger::new( LevelFilter::Warn, Config::default()).unwrap(),
@@ -58,13 +71,15 @@ impl<W> Default for WaveHost<W> where W : Wave {
 
         info!("someone calling new wave!");
 
+        let (wave, description) = W::new();
+
         WaveHost {
-            wave : W::new(),
+            wave : wave,
+            description: description,
             sample_rate: 44100.0,
             time: 0.0,
         }
     }
-
 }
 
 impl<W> Plugin for WaveHost<W> where W : Wave {
@@ -83,10 +98,10 @@ impl<W> Plugin for WaveHost<W> where W : Wave {
         // info!("asked for info in_count {} out_count {}", in_count, out_count);
 
         Info {
-            name: "Waves".to_string(),
-            vendor: "WaveyHost".to_string(),
-            unique_id: 25032522,
-            category: Category::Effect,
+            name: self.description.name.clone(),
+            vendor: self.description.vendor.clone(),
+            unique_id: self.description.unique_id,
+            category: self.description.category,
             inputs: in_count,
             outputs: out_count,
             parameters: 0,
@@ -105,10 +120,9 @@ impl<W> Plugin for WaveHost<W> where W : Wave {
                 sample_rate: self.sample_rate,
             };
 
+            // info!("got some samples input {} output {}", inputs.len(), outputs.len());
+
             let input = W::Input::read(&inputs);
-
-
-
 
             let out = self.wave.process(time_span, &input);
             W::Output::sink(out.as_slice(), &mut outputs);

@@ -8,10 +8,15 @@ vst2 = "0.0.1"
 log = "0.3"
 simplelog = "0.4"
 num-traits = "0.1"
+log-panics = "1.1"
 
 [lib]
 name = "waves"
 
 [[example]]
 name = "sine"
+crate-type = ["cdylib"]
+
+[[example]]
+name = "reverb"
 crate-type = ["cdylib"]
