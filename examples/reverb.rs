@@ -46,10 +46,9 @@ impl Wave for ReverbWave {
     fn process(&mut self, time:TimeSpan, input: &[f32]) -> Vec<f32> {
         let mut out = Vec::with_capacity(time.samples);
 
-        let time_per_sample = time.time_per_sample();
-        let reverbs : Vec<_> = self.reverbs.iter().map(|r| ((r.delay / time_per_sample) as usize, r.gain)).collect();
+        let reverbs : Vec<_> = self.reverbs.iter().map(|r| ((r.delay / time.time_per_sample()) as usize, r.gain)).collect();
 
-        let max_samples = reverbs.last().expect("a reverb").0 + 1;
+        let max_samples = reverbs.last().expect("a reverb").0 + 1; // assumes ordered for now
         
         // ensure circular buffer is big enough
         while self.delay_channel.len() < max_samples {
