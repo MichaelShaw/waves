@@ -27,9 +27,9 @@ impl Wave for ReverbWave {
         (
             ReverbWave {
                 reverbs: vec![
-                    Reverb { delay: 0.020, gain: 0.6 },
-                    Reverb { delay: 0.033, gain: 0.22 },
-                    Reverb { delay: 0.047, gain: 0.15 },
+                    Reverb { delay: 0.020, gain: 0.4 },
+                    Reverb { delay: 0.033, gain: 0.25 },
+                    Reverb { delay: 0.047, gain: 0.1 },
                 ],
                 delay_channel : Vec::new(),
                 at: 0,
@@ -65,7 +65,7 @@ impl Wave for ReverbWave {
 
             for &(delay, gain) in &reverbs {
                 let delay_idx = (self.at + delay) % max_samples; // circ buffer
-                self.delay_channel[delay_idx] = o * gain;
+                self.delay_channel[delay_idx] += o * gain;
             }
 
             self.at = (self.at + 1) % max_samples;
