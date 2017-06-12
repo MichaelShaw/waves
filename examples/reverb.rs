@@ -27,9 +27,9 @@ impl Wave for ReverbWave {
         (
             ReverbWave {
                 reverbs: vec![
-                    Reverb { delay: 0.1, gain: 0.5 },
-                    Reverb { delay: 0.13, gain: 0.2 },
-                    Reverb { delay: 0.18, gain: 0.1 },
+                    Reverb { delay: 0.020, gain: 0.6 },
+                    Reverb { delay: 0.033, gain: 0.22 },
+                    Reverb { delay: 0.047, gain: 0.15 },
                 ],
                 delay_channel : Vec::new(),
                 at: 0,
